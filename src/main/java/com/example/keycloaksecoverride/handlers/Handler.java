@@ -14,9 +14,10 @@ public class Handler {
         return "Hello";
     }
 
-    @GetMapping("/authenticatedUsername")
+    @GetMapping("/test")
     public String helloAuth() {
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
         return "Hello " + SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }
