@@ -1,4 +1,4 @@
-package com.example.keycloaksecoverride.Security.filters;
+package com.example.keycloaksecoverride.Security.config;
 
 import com.example.keycloaksecoverride.Security.domain.AuthValues;
 import com.example.keycloaksecoverride.Security.config.KeycloakAdapterAuthValid;

@@ -3,16 +3,16 @@ package com.example.keycloaksecoverride.Security.config;
 import com.example.keycloaksecoverride.Security.domain.AuthValues;
 import com.example.keycloaksecoverride.Security.token.CustomSecToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.security.auth.login.CredentialException;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -27,13 +27,13 @@ public class CustomAuthProvider implements AuthenticationProvider {
         String token = keycloakAdapter.authenticate(userName, password);
 
         if (token == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Username not found or password is not correct");
+            throw new BadCredentialsException("Bad credentials");
         }
 
         AuthValues values = keycloakAdapter.validate(token);
 
         if (values == null) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "unexpected error on keycloak side");
+            throw new AuthenticationServiceException("Authentication service failure");
         }
 
         return new CustomSecToken(
