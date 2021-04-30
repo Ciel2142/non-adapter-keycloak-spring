@@ -24,14 +24,12 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 request.getParameter(getUsernameParameter()),
                 request.getParameter(getUsernameParameter())
         );
 
         return authenticationManager.authenticate(authentication);
-
     }
 
     @Override

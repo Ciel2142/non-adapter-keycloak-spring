@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
@@ -20,14 +19,11 @@ public class KeycloakSec extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().
-//                sessionManagement().
-//                sessionCreationPolicy(SessionCreationPolicy.STATELESS).
-//                and().
-        httpBasic().disable().
+                httpBasic().disable().
                 addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), failureHandler())).
                 addFilterAfter(new JwtTokenVerifier(keycloakAdapterAuthValid), JwtUsernameAndPasswordAuthenticationFilter.class).
                 authorizeRequests().
-                antMatchers("/", "index", "/css/**", "/js/**", "/static/**", "/js/**", "/img/**", "/json?**").permitAll().
+                antMatchers("/", "index", "/css/**", "/static/**", "/js/**", "/img/**", "/json?**").permitAll().
                 anyRequest().
                 authenticated().
                 and().

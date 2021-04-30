@@ -39,7 +39,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
         return new CustomSecToken(
                 userName,
                 null,
-                values.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())).collect(Collectors.toList()),
+                values.getRoles(),
                 token
         );
     }

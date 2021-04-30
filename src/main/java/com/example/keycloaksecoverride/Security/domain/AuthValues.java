@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,4 +19,12 @@ public class AuthValues {
     private String userName;
     @JsonProperty("roles")
     private List<String> roles;
+
+    public List<SimpleGrantedAuthority> getRoles() {
+        return getRoles("ROLE_");
+    }
+
+    public List<SimpleGrantedAuthority> getRoles(String prefix) {
+        return roles.stream().map(v -> new SimpleGrantedAuthority(prefix + v.toUpperCase())).collect(Collectors.toList());
+    }
 }

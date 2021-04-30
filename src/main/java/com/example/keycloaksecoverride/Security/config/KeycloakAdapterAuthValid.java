@@ -10,6 +10,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * @author Vladislav Lukin
+ * */
 @RequiredArgsConstructor
 @Configuration
 public class KeycloakAdapterAuthValid {
@@ -18,7 +21,15 @@ public class KeycloakAdapterAuthValid {
     private String tokenUrl;
     @Value("keycloak.userinfo.url")
     private String userinfo;
+    @Value("keycloak.client_id")
+    private String keycloakClient;
+    @Value("keycloak.client_secret")
+    private String keycloakClientSecret;
 
+    /**
+     * @apiNote method takes credentials and attempts to authenticate using keycloak endpoint if we're successful we return with
+     * @return a jwt token which will later on be passed to validate method
+     * */
     protected String authenticate(String username, String password) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -26,18 +37,19 @@ public class KeycloakAdapterAuthValid {
         body.add("username", username);
         body.add("password", password);
         body.add("grant_type", "password");
-        body.add("client_secret", "dd622848-f8be-4290-806e-a5a186416433");
-        body.add("client_id", "kibana-sso");
+        body.add("client_secret", keycloakClientSecret);
+        body.add("client_id", keycloakClient);
         String token = null;
         try {
             ResponseEntity<KeyCloakToken> authResponse = restTemplate.exchange(
-                    "http://localhost:8080/auth/realms/TestRealm/protocol/openid-connect/token",
+                    tokenUrl,
                     HttpMethod.POST,
                     new HttpEntity<>(body, headers),
                     KeyCloakToken.class
             );
 
-            token = authResponse.getBody().getJwt();
+            if (authResponse.getBody() != null) token = authResponse.getBody().getJwt();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,6 +58,9 @@ public class KeycloakAdapterAuthValid {
         return token;
     }
 
+    /**
+     * @apiNote method takes jwt token which with which we call keycloak endpoint to parse it, if token is valid it will \
+     * @return AuthValues which contains userName and roles */
     protected AuthValues validate(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -54,7 +69,7 @@ public class KeycloakAdapterAuthValid {
 
 
         ResponseEntity<AuthValues> jwtValues = restTemplate.exchange(
-                "http://localhost:8080/auth/realms/TestRealm/protocol/openid-connect/userinfo",
+                userinfo,
                 HttpMethod.POST,
                 httpEntity,
                 AuthValues.class

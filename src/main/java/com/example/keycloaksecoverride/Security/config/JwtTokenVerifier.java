@@ -1,7 +1,6 @@
 package com.example.keycloaksecoverride.Security.config;
 
 import com.example.keycloaksecoverride.Security.domain.AuthValues;
-import com.example.keycloaksecoverride.Security.config.KeycloakAdapterAuthValid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,7 +37,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     authValues.getUserName(),
                     null,
-                    authValues.getRoles().stream().map(e -> new SimpleGrantedAuthority("ROLE_" + e)).collect(Collectors.toList())
+                    authValues.getRoles()
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
