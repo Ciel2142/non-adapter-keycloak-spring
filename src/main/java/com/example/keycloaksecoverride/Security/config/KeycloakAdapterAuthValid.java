@@ -17,13 +17,13 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class KeycloakAdapterAuthValid {
     private final RestTemplate restTemplate;
-    @Value("keycloak.token.url")
+    @Value("${keycloak.token.url}")
     private String tokenUrl;
-    @Value("keycloak.userinfo.url")
+    @Value("${keycloak.userinfo.url}")
     private String userinfo;
-    @Value("keycloak.client_id")
+    @Value("${keycloak.client_id}")
     private String keycloakClient;
-    @Value("keycloak.client_secret")
+    @Value("${keycloak.client_secret}")
     private String keycloakClientSecret;
 
     /**
@@ -39,8 +39,10 @@ public class KeycloakAdapterAuthValid {
         body.add("grant_type", "password");
         body.add("client_secret", keycloakClientSecret);
         body.add("client_id", keycloakClient);
+
         String token = null;
         try {
+
             ResponseEntity<KeyCloakToken> authResponse = restTemplate.exchange(
                     tokenUrl,
                     HttpMethod.POST,

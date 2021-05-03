@@ -24,6 +24,8 @@ public class CustomAuthProvider implements AuthenticationProvider {
         String userName = authentication.getName();
         String password = authentication.getCredentials().toString();
 
+        System.out.println(password);
+
         String token = keycloakAdapter.authenticate(userName, password);
 
         if (token == null) {

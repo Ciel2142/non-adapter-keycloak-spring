@@ -26,7 +26,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                                 HttpServletResponse response) throws AuthenticationException {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 request.getParameter(getUsernameParameter()),
-                request.getParameter(getUsernameParameter())
+                request.getParameter(getPasswordParameter())
         );
 
         return authenticationManager.authenticate(authentication);
